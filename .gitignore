@@ -2,8 +2,10 @@
 # Created by https://www.toptal.com/developers/gitignore/api/python,windows,macos,pycharm+all
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,windows,macos,pycharm+all
 
-# raw data
-hexoskin/*
+# hexoskin data
+hexoskin/raw/
+!.gitkeep
+hexoskin/actual/
 !.gitkeep
 
 
