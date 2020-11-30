@@ -3,9 +3,11 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,windows,macos,pycharm+all
 
 # hexoskin data
-hexoskin/raw/
+hexoskin/raw/*
 !.gitkeep
-hexoskin/actual/
+hexoskin/actual/*
+!.gitkeep
+hexoskin/impact/*
 !.gitkeep
 
 
