@@ -37,6 +37,9 @@ def extract_impact():
         # rename index
         rename = {ind: c for c, ind in enumerate(hr.index)}
 
+        # get hr
+        hr_numpy = hr.values.squeeze()
+
         # append filename to first row
         hr.loc[-1] = filename
 
@@ -45,6 +48,10 @@ def extract_impact():
         # do rename
         rename[-1] = 'filename'
         hr = hr.rename(rename, axis='index')
+
+        # append average and std
+        hr.loc['average'] = hr_numpy.mean()
+        hr.loc['std'] = hr_numpy.std()
 
         ret_df = ret_df.append(hr.T, ignore_index=True)
 
