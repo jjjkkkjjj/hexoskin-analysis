@@ -52,6 +52,7 @@ def extract_impact():
         # append average and std
         hr.loc['average'] = hr_numpy.mean()
         hr.loc['std'] = hr_numpy.std()
+        hr.loc['max'] = hr_numpy.max()
 
         ret_df = ret_df.append(hr.T, ignore_index=True)
 
