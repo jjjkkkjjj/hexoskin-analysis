@@ -5,7 +5,7 @@
 # hexoskin data
 hexoskin/raw/*
 !.gitkeep
-hexoskin/actual/*
+hexoskin/hr/*
 !.gitkeep
 hexoskin/impact/*
 !.gitkeep

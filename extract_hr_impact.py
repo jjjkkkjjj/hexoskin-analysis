@@ -4,9 +4,9 @@ import numpy as np
 from time import mktime, gmtime
 from datetime import datetime, timedelta
 
-parser = argparse.ArgumentParser(description='Convert hexoskin raw data into actual data.')
+parser = argparse.ArgumentParser(description='Convert hexoskin raw data into hr data.')
 parser.add_argument('duration', type=int, default=10, help='Duration time to impact[s]')
-parser.add_argument('-i', '--input-dir', type=str, default=os.path.join('hexoskin', 'actual'),
+parser.add_argument('-i', '--input-dir', type=str, default=os.path.join('hexoskin', 'hr'),
                     help='Input directory path')
 parser.add_argument('-o', '--output-dir', type=str, default=os.path.join('hexoskin', 'impact'),
                     help='Output directory path')
@@ -111,7 +111,7 @@ def extract_impact():
     # reorder columns
     columns = all_df.columns.tolist()
     all_df = all_df[columns[:1] + columns[-5:] + columns[1:-5]]
-    all_df.to_excel(os.path.join(output_dirpath, 'all.xlsx'), index=False)
+    all_df.to_excel(os.path.join(output_dirpath, 'all-hr.xlsx'), index=False)
 
     return
 

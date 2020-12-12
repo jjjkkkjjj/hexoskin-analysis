@@ -3,10 +3,10 @@ import pandas as pd
 from time import mktime, gmtime
 from datetime import datetime, timedelta
 
-parser = argparse.ArgumentParser(description='Convert hexoskin raw data into actual data.')
+parser = argparse.ArgumentParser(description='Convert hexoskin raw data into hr data.')
 parser.add_argument('-i', '--input-dir', type=str, default=os.path.join('hexoskin', 'raw'),
                     help='Input directory path')
-parser.add_argument('-o', '--output-dir', type=str, default=os.path.join('hexoskin', 'actual'),
+parser.add_argument('-o', '--output-dir', type=str, default=os.path.join('hexoskin', 'hr'),
                     help='Output directory path')
 
 args = parser.parse_args()
