@@ -58,9 +58,10 @@ def extract_impact():
 
         return ret_df
 
-    def extract_loop(search_word):
+    def extract_loop(search_word, all_df):
         """
         :param search_word: str, searching word
+        :param all_df: pd.DataFrame
         :return:
         """
         # parse import file
@@ -91,8 +92,26 @@ def extract_impact():
         df30.to_excel(os.path.join(output_dirpath, search_word + '-30-impact.xlsx'), index=False)
         df60.to_excel(os.path.join(output_dirpath, search_word + '-60-impact.xlsx'), index=False)
 
-    extract_loop('nov')
-    extract_loop('pro')
+        def _append_info(df, dist):
+            df['kind'] = search_word
+            df['distance'] = dist
+            return all_df.append(df, ignore_index=True)
+        all_df = _append_info(df05, 0.5)
+        all_df = _append_info(df15, 1.5)
+        all_df = _append_info(df30, 3.0)
+        all_df = _append_info(df60, 6.0)
+
+        return all_df
+
+    all_df = pd.DataFrame()
+
+    all_df = extract_loop('nov', all_df)
+    all_df = extract_loop('pro', all_df)
+
+    # reorder columns
+    columns = all_df.columns.tolist()
+    all_df = all_df[columns[:1] + columns[-5:] + columns[1:-5]]
+    all_df.to_excel(os.path.join(output_dirpath, 'all.xlsx'), index=False)
 
     return
 

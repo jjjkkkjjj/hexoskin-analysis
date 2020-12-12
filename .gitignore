@@ -9,6 +9,8 @@ hexoskin/actual/*
 !.gitkeep
 hexoskin/impact/*
 !.gitkeep
+hexoskin/rr_interval/*
+!.gitkeep
 
 
 ### macOS ###
