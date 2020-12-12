@@ -5,12 +5,12 @@ from time import mktime, gmtime
 from datetime import datetime, timedelta
 
 parser = argparse.ArgumentParser(description='Convert hexoskin raw data into hr data.')
-parser.add_argument('duration', type=int, default=10, help='Duration time to impact[s]')
+parser.add_argument('duration', type=int, default=10, help='Duration time to impact-hr[s]')
 parser.add_argument('-i', '--input-dir', type=str, default=os.path.join('hexoskin', 'hr'),
                     help='Input directory path')
-parser.add_argument('-o', '--output-dir', type=str, default=os.path.join('hexoskin', 'impact'),
+parser.add_argument('-o', '--output-dir', type=str, default=os.path.join('hexoskin', 'impact-hr'),
                     help='Output directory path')
-parser.add_argument('-f', '--import-file', type=str, default=os.path.join('hexoskin', 'impact', 'impact-time.xlsx'),
+parser.add_argument('-f', '--import-file', type=str, default=os.path.join('hexoskin', 'impact-time.xlsx'),
                     help='Import file')
 
 args = parser.parse_args()
@@ -39,22 +39,19 @@ def extract_impact():
 
         # get hr
         hr_numpy = hr.values.squeeze()
-
-        # append filename to first row
-        hr.loc[-1] = filename
-
-        # sort index, filename is first
-        hr = hr.reindex(index=np.roll(hr.index, 1))
-        # do rename
-        rename[-1] = 'filename'
         hr = hr.rename(rename, axis='index')
 
+        # append filename to first row
+        hr.loc['filename'] = filename
         # append average and std
         hr.loc['average'] = hr_numpy.mean()
         hr.loc['std'] = hr_numpy.std()
         hr.loc['max'] = hr_numpy.max()
 
         ret_df = ret_df.append(hr.T, ignore_index=True)
+
+        non_rawvals = ['filename', 'average', 'std', 'max']
+        ret_df = ret_df[non_rawvals + [i for i in range(len(ret_df.columns.tolist()) - len(non_rawvals))]]
 
         return ret_df
 
@@ -87,10 +84,10 @@ def extract_impact():
             # 6.0m
             df60 = extractor(str(row_series['6.0m time']), filename, data_df, df60)
 
-        df05.to_excel(os.path.join(output_dirpath, search_word + '-05-impact.xlsx'), index=False)
-        df15.to_excel(os.path.join(output_dirpath, search_word + '-15-impact.xlsx'), index=False)
-        df30.to_excel(os.path.join(output_dirpath, search_word + '-30-impact.xlsx'), index=False)
-        df60.to_excel(os.path.join(output_dirpath, search_word + '-60-impact.xlsx'), index=False)
+        df05.to_excel(os.path.join(output_dirpath, search_word + '-05-hr.xlsx'), index=False)
+        df15.to_excel(os.path.join(output_dirpath, search_word + '-15-hr.xlsx'), index=False)
+        df30.to_excel(os.path.join(output_dirpath, search_word + '-30-hr.xlsx'), index=False)
+        df60.to_excel(os.path.join(output_dirpath, search_word + '-60-hr.xlsx'), index=False)
 
         def _append_info(df, dist):
             df['kind'] = search_word
@@ -111,7 +108,7 @@ def extract_impact():
     # reorder columns
     columns = all_df.columns.tolist()
     all_df = all_df[columns[:1] + columns[-5:] + columns[1:-5]]
-    all_df.to_excel(os.path.join(output_dirpath, 'all-hr.xlsx'), index=False)
+    all_df.to_excel(os.path.join(output_dirpath, 'all.xlsx'), index=False)
 
     return
 

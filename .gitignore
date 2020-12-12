@@ -3,15 +3,17 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,windows,macos,pycharm+all
 
 # hexoskin data
+hexoskin/impact-time.xlsx
 hexoskin/raw/*
 !.gitkeep
 hexoskin/hr/*
 !.gitkeep
-hexoskin/impact/*
+hexoskin/impact-hr/*
 !.gitkeep
 hexoskin/rr_interval/*
 !.gitkeep
-
+hexoskin/impact-rr_interval/*
+!.gitkeep
 
 ### macOS ###
 # General
