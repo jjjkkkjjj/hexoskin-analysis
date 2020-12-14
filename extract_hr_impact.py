@@ -107,7 +107,8 @@ def extract_impact():
 
     # reorder columns
     columns = all_df.columns.tolist()
-    all_df = all_df[columns[:1] + columns[-5:] + columns[1:-5]]
+    non_rawvals = ['filename', 'average', 'std', 'max', 'kind', 'distance']
+    all_df = all_df[non_rawvals + [i for i in range(len(columns) - len(non_rawvals))]]
     all_df.to_excel(os.path.join(output_dirpath, 'all.xlsx'), index=False)
 
     return
