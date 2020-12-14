@@ -56,13 +56,14 @@ def extract_impact():
 
         # append filename to first row
         rr_interval.loc['filename'] = filename
+        rr_interval.loc['name'] = filename.split('-')[-1]
         # append average and std
         rr_interval.loc['average'] = rr_interval_numpy.mean()
         rr_interval.loc['std'] = rr_interval_numpy.std()
 
         ret_df = ret_df.append(rr_interval.T, ignore_index=True)
 
-        non_rawvals = ['filename', 'average', 'std']
+        non_rawvals = ['filename', 'name', 'average', 'std']
         ret_df = ret_df[non_rawvals + [i for i in range(len(ret_df.columns.tolist()) - len(non_rawvals))]]
 
         return ret_df
@@ -124,7 +125,7 @@ def extract_impact():
 
     # reorder columns
     columns = all_df.columns.tolist()
-    non_rawvals = ['filename', 'average', 'std', 'kind', 'distance']
+    non_rawvals = ['filename', 'name', 'average', 'std', 'kind', 'distance']
     all_df = all_df[non_rawvals + [i for i in range(len(columns) - len(non_rawvals))]]
     all_df.to_excel(os.path.join(output_dirpath, 'all.xlsx'), index=False)
 

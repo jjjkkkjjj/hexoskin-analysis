@@ -41,8 +41,9 @@ def extract_impact():
         hr_numpy = hr.values.squeeze()
         hr = hr.rename(rename, axis='index')
 
-        # append filename to first row
+        # append filename and name to first rows
         hr.loc['filename'] = filename
+        hr.loc['name'] = filename.split('-')[-1]
         # append average and std
         hr.loc['average'] = hr_numpy.mean()
         hr.loc['std'] = hr_numpy.std()
@@ -50,7 +51,7 @@ def extract_impact():
 
         ret_df = ret_df.append(hr.T, ignore_index=True)
 
-        non_rawvals = ['filename', 'average', 'std', 'max']
+        non_rawvals = ['filename', 'name', 'average', 'std', 'max']
         ret_df = ret_df[non_rawvals + [i for i in range(len(ret_df.columns.tolist()) - len(non_rawvals))]]
 
         return ret_df
@@ -107,7 +108,7 @@ def extract_impact():
 
     # reorder columns
     columns = all_df.columns.tolist()
-    non_rawvals = ['filename', 'average', 'std', 'max', 'kind', 'distance']
+    non_rawvals = ['filename', 'name', 'average', 'std', 'max', 'kind', 'distance']
     all_df = all_df[non_rawvals + [i for i in range(len(columns) - len(non_rawvals))]]
     all_df.to_excel(os.path.join(output_dirpath, 'all.xlsx'), index=False)
 
