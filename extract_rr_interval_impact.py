@@ -34,15 +34,19 @@ def extract_impact():
         :param ret_df: pd.DataFrame, appended extracted data for row
         :return:
         """
-        # get start time
-        diff = datetime.combine(date.today(), datetime.strptime(column, '%H:%M:%S').time()) - \
-               datetime.combine(date.today(), datetime.strptime(data_hr_df.time[0], '%H:%M:%S').time())
-        diff = diff.total_seconds()
+        if column:
+            # get start time
+            diff = datetime.combine(date.today(), datetime.strptime(column, '%H:%M:%S').time()) - \
+                   datetime.combine(date.today(), datetime.strptime(data_hr_df.time[0], '%H:%M:%S').time())
+            diff = diff.total_seconds()
+        else:
+            diff = 50
 
         # get index with nearest time
         # ref https://stackoverflow.com/questions/30112202/how-do-i-find-the-closest-values-in-a-pandas-series-to-an-input-number
         impact_ind = (data_rr_interval_df['time [s]'] - diff).abs().argsort()[0]
         duration_time_ind = (data_rr_interval_df['time [s]'] - (diff - duration_time)).abs().argsort()[0]
+
 
         # get rr interval
         rr_interval = data_rr_interval_df.iloc[:, [1]][duration_time_ind:impact_ind + 1] / 256
@@ -78,7 +82,7 @@ def extract_impact():
         impact_time_df = pd.read_excel(import_file)
         indices = impact_time_df.index[impact_time_df['filename'].str.contains(search_word)]
 
-        df05, df15, df30, df60 = pd.DataFrame(), pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
+        dfrest, df05, df15, df30, df60 = pd.DataFrame(), pd.DataFrame(), pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
         for index in indices:
             row_series = impact_time_df.loc[index]
             filename = row_series['filename']
@@ -89,6 +93,9 @@ def extract_impact():
                 continue
             path = os.path.join(input_hr_dirpath, filename + '-converted.xlsx')
             data_hr_df = pd.read_excel(path)
+
+            # rest
+            dfrest = extractor(None, filename, data_rr_interval_df, data_hr_df, dfrest)
 
             # 0.5m
             df05 = extractor(str(row_series['0.5m time']), filename, data_rr_interval_df, data_hr_df, df05)
@@ -102,6 +109,7 @@ def extract_impact():
             # 6.0m
             df60 = extractor(str(row_series['6.0m time']), filename, data_rr_interval_df, data_hr_df, df60)
 
+        dfrest.to_excel(os.path.join(output_dirpath, search_word + '-rest-rr_interval.xlsx'), index=False)
         df05.to_excel(os.path.join(output_dirpath, search_word + '-05-rr_interval.xlsx'), index=False)
         df15.to_excel(os.path.join(output_dirpath, search_word + '-15-rr_interval.xlsx'), index=False)
         df30.to_excel(os.path.join(output_dirpath, search_word + '-30-rr_interval.xlsx'), index=False)
@@ -111,6 +119,8 @@ def extract_impact():
             df['kind'] = search_word
             df['distance'] = dist
             return all_df.append(df, ignore_index=True)
+
+        all_df = _append_info(dfrest, 'rest')
         all_df = _append_info(df05, 0.5)
         all_df = _append_info(df15, 1.5)
         all_df = _append_info(df30, 3.0)

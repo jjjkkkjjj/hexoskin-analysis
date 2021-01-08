@@ -103,12 +103,14 @@ def extract_impact():
                 df['average(rest)'] = dfrest['average']
                 df['std(rest)'] = dfrest['std']
                 df['max(rest)'] = dfrest['max']
-        _append_rest([df05, df15, df30, df60], dfrest)
+        #_append_rest([df05, df15, df30, df60], dfrest)
 
         def _append_info(df, dist):
             df['kind'] = search_word
             df['distance'] = dist
             return all_df.append(df, ignore_index=True)
+
+        all_df = _append_info(dfrest, 'rest')
         all_df = _append_info(df05, 0.5)
         all_df = _append_info(df15, 1.5)
         all_df = _append_info(df30, 3.0)
@@ -126,7 +128,8 @@ def extract_impact():
 
     # reorder columns
     columns = all_df.columns.tolist()
-    non_rawvals = ['filename', 'name', 'average', 'std', 'max', 'kind', 'distance', 'average(rest)', 'std(rest)', 'max(rest)']
+    #non_rawvals = ['filename', 'name', 'average', 'std', 'max', 'kind', 'distance', 'average(rest)', 'std(rest)', 'max(rest)']
+    non_rawvals = ['filename', 'name', 'average', 'std', 'max', 'kind', 'distance']
     all_df = all_df[non_rawvals + [i for i in range(len(columns) - len(non_rawvals))]]
     all_df.to_excel(os.path.join(output_dirpath, 'all.xlsx'), index=False)
 
